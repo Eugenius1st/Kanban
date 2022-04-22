@@ -1,7 +1,10 @@
 import { Droppable } from "react-beautiful-dnd";
 import DragabbleCard from "./DragableCard";
 import styled from "styled-components";
-import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { ITodo } from "../atoms";
+
+//form 만들기
 
 const Wrapper = styled.div`
     width: 300px;
@@ -28,8 +31,15 @@ const Area = styled.div<IAreaProps>`
     padding: 20px;
 `;
 
+const Form = styled.form`
+    width: 100%;
+    input {
+        width: 100%;
+    }
+`;
+
 interface IBoardProps {
-    toDos: string[];
+    toDos: ITodo[];
     boardId: string;
 }
 
@@ -38,31 +48,29 @@ interface IAreaProps {
     isDraggingOver: boolean;
 }
 
-export default function Board({ toDos, boardId }: IBoardProps) {
-    const inputRef = useRef<HTMLInputElement>(null);
-    /* ref는 우리의 react 코드를 이용해 HTML요소를 지정하고 가져올 수 있는 방법이다. 
-              모든 행동이 자바스크립트로 부터온다.*/
+interface IForm {
+    toDo: string;
+}
 
-    const onClick = () => {
-        inputRef.current?.focus();
-        //이런 focus 기능을 쓸 수 있다.
-        setTimeout(() => {
-            inputRef.current?.blur();
-            //blur는 focus가 없어지는 것이다.
-        }, 5000);
+export default function Board({ toDos, boardId }: IBoardProps) {
+    const { register, setValue, handleSubmit } = useForm<IForm>();
+    const onValid = ({ toDo }: IForm) => {
+        //toDo를 받기 위해 atom을 수정하자
+        setValue("toDo", "");
     };
 
     return (
         <Wrapper>
             <Title>{boardId}</Title>
-            <input ref={inputRef} placeholder="grab me" />
-            <button>click me</button>
+            <Form onSubmit={handleSubmit(onValid)}>
+                <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardId}`} />
+                {/* submit 할때마다 빈칸을 만든다. */}
+            </Form>
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => (
                     <Area isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} ref={magic.innerRef} {...magic.droppableProps}>
-                        {/* ref는 우리의 react 코드를 이용해 HTML요소를 지정하고 가져올 수 있는 방법이다. */}
                         {toDos.map((toDo, index) => (
-                            <DragabbleCard key={toDo} index={index} toDo={toDo} />
+                            <DragabbleCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
                         ))}
                         {magic.placeholder}
                     </Area>
