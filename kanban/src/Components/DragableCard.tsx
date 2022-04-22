@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import React from "react";
-
+//우리의 list 에 todo를 추가할 수 있는 form을 만들자 ! 유저가 엔터쳐서 등록하도록..
 const Card = styled.div<{ isDragging: boolean }>`
     border-radius: 5px;
     padding: 10px;

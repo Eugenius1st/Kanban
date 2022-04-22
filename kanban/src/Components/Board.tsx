@@ -1,6 +1,7 @@
 import { Droppable } from "react-beautiful-dnd";
 import DragabbleCard from "./DragableCard";
 import styled from "styled-components";
+import { useRef } from "react";
 
 const Wrapper = styled.div`
     width: 300px;
@@ -38,14 +39,28 @@ interface IAreaProps {
 }
 
 export default function Board({ toDos, boardId }: IBoardProps) {
+    const inputRef = useRef<HTMLInputElement>(null);
+    /* ref는 우리의 react 코드를 이용해 HTML요소를 지정하고 가져올 수 있는 방법이다. 
+              모든 행동이 자바스크립트로 부터온다.*/
+
+    const onClick = () => {
+        inputRef.current?.focus();
+        //이런 focus 기능을 쓸 수 있다.
+        setTimeout(() => {
+            inputRef.current?.blur();
+            //blur는 focus가 없어지는 것이다.
+        }, 5000);
+    };
+
     return (
         <Wrapper>
             <Title>{boardId}</Title>
+            <input ref={inputRef} placeholder="grab me" />
+            <button>click me</button>
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => (
-                    //snapshot을 오른쪽 마우스로 클릭 후 type defination을 통해 봐보자
-                    //isDragging, isDropAnimation, dropAnimation, draggingOver 등등..
                     <Area isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} ref={magic.innerRef} {...magic.droppableProps}>
+                        {/* ref는 우리의 react 코드를 이용해 HTML요소를 지정하고 가져올 수 있는 방법이다. */}
                         {toDos.map((toDo, index) => (
                             <DragabbleCard key={toDo} index={index} toDo={toDo} />
                         ))}
