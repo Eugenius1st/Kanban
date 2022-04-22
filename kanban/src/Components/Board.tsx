@@ -78,7 +78,6 @@ export default function Board({ toDos, boardId }: IBoardProps) {
             <Title>{boardId}</Title>
             <Form onSubmit={handleSubmit(onValid)}>
                 <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardId}`} />
-                {/* submit 할때마다 빈칸을 만든다. */}
             </Form>
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => (
