@@ -2,9 +2,11 @@ import { Droppable } from "react-beautiful-dnd";
 import DragabbleCard from "./DragableCard";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { ITodo } from "../atoms";
+import { ITodo, toDoState } from "../atoms";
+import { useSetRecoilState } from "recoil";
 
-//form 만들기
+//복사본을 기준으로 새로운 array를 만들고 기존의
+//board를 가져다가 넣어준다.
 
 const Wrapper = styled.div`
     width: 300px;
@@ -53,9 +55,21 @@ interface IForm {
 }
 
 export default function Board({ toDos, boardId }: IBoardProps) {
+    const setToDos = useSetRecoilState(toDoState);
     const { register, setValue, handleSubmit } = useForm<IForm>();
     const onValid = ({ toDo }: IForm) => {
         //toDo를 받기 위해 atom을 수정하자
+        const newToDo = {
+            id: Date.now(),
+            text: toDo,
+        };
+
+        setToDos((allBoards) => {
+            return {
+                ...allBoards,
+                [boardId]: [newToDo, ...allBoards[boardId]],
+            };
+        });
         setValue("toDo", "");
     };
 
