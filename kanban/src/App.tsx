@@ -21,40 +21,49 @@ const Boards = styled.div`
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
 `;
-
 export default function App() {
     const [toDos, setToDos] = useRecoilState(toDoState);
     const onDragEnd = (info: DropResult) => {
         console.log(info);
         const { destination, draggableId, source } = info;
-        //info로 부터 받아올 수 있는 녀석들을 다 받아온다.
+        if (!destination) return;
+        //정의되지 않으면 함수를 종료시킬 것이다.
         if (destination?.droppableId === source.droppableId) {
-            // same board movement.같은 보드 안에서 움직였다는 뜻
             setToDos((allBoards) => {
-                //array를 복사하는 과정
                 const boardCopy = [...allBoards[source.droppableId]];
                 boardCopy.splice(source.index, 1);
                 boardCopy.splice(destination?.index, 0, draggableId);
-                //다른 destination에 넣어준다
                 return {
                     ...allBoards,
                     [source.droppableId]: boardCopy,
-                    //다른 모든 board를 가져오고 새로운 board의 copy를 더해주는 것이다.
+                };
+            });
+        }
+        if (destination.droppableId !== source.droppableId) {
+            // Cross Board Movement
+            setToDos((allBoards) => {
+                const sourceBoard = [...allBoards[source.droppableId]];
+                const destinationBoard = [...allBoards[destination.droppableId]];
+                sourceBoard.splice(source.index, 1);
+                destinationBoard.splice(destination?.index, 0, draggableId);
+                return {
+                    ...allBoards,
+                    [source.droppableId]: sourceBoard,
+                    [destination.droppableId]: destinationBoard,
                 };
             });
         }
     };
 
     return (
-        <div></div>
-        // <DragDropContext onDragEnd={onDragEnd}>
-        //     <Wrapper>
-        //         <Boards>
-        //             {Object.keys(toDos).map((boardId) => (
-        //                 <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-        //             ))}
-        //         </Boards>
-        //     </Wrapper>
-        // </DragDropContext>
+        <DragDropContext onDragEnd={onDragEnd}>
+            <Wrapper>
+                <Boards>
+                    {Object.keys(toDos).map((boardId) => (
+                        <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+                    ))}
+                </Boards>
+            </Wrapper>
+        </DragDropContext>
     );
 }
