@@ -13,7 +13,3 @@ export const toDoState = atom<IToDoState>({
         "Do Later": ["x", "z"],
     },
 });
-//source array와 destination array 총 두개를 복사한다.
-//1. source: "To Do": ["a",]
-//2. destination: Done: ["b", "f"]
-// 3. 나머지 board를 return한다.

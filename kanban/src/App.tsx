@@ -27,7 +27,6 @@ export default function App() {
         console.log(info);
         const { destination, draggableId, source } = info;
         if (!destination) return;
-        //정의되지 않으면 함수를 종료시킬 것이다.
         if (destination?.droppableId === source.droppableId) {
             setToDos((allBoards) => {
                 const boardCopy = [...allBoards[source.droppableId]];

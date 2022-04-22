@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
     width: 300px;
-    padding: 20px 10px;
-    padding-top: 10px;
+    padding: 10px 0px;
+    padding-top: 10px 0d;
     background-color: ${(props) => props.theme.boardColor};
     border-radius: 5px;
     min-height: 300px;
@@ -21,10 +21,10 @@ const Title = styled.h2`
 `;
 
 const Area = styled.div<IAreaProps>`
-    background-color: ${(props) => (props.isDraggingOver ? "pink" : props.isDraggingFromThis ? "red" : "skyblue")};
-    //div를 떠날때 색깓들을 바꿔준다.
+    background-color: ${(props) => (props.isDraggingOver ? "#dfe6e9" : props.isDraggingFromThis ? "#b2bec3" : "transparent")};
     flex-grow: 1;
     transition: background-color 0.3s ease-in-out;
+    padding: 20px;
 `;
 
 interface IBoardProps {
@@ -44,7 +44,7 @@ export default function Board({ toDos, boardId }: IBoardProps) {
             <Droppable droppableId={boardId}>
                 {(magic, snapshot) => (
                     //snapshot을 오른쪽 마우스로 클릭 후 type defination을 통해 봐보자
-                    //drag의 from부터 to를 알 수 있다.
+                    //isDragging, isDropAnimation, dropAnimation, draggingOver 등등..
                     <Area isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} ref={magic.innerRef} {...magic.droppableProps}>
                         {toDos.map((toDo, index) => (
                             <DragabbleCard key={toDo} index={index} toDo={toDo} />
