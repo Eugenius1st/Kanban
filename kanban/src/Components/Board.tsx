@@ -1,20 +1,21 @@
 import { Droppable } from "react-beautiful-dnd";
-import DraggableCard from "./DraggableCard";
+import DragabbleCard from "./DragableCard";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
+    width: 300px;
     padding: 20px 10px;
-    padding-top: 30px;
+    padding-top: 10px;
     background-color: ${(props) => props.theme.boardColor};
     border-radius: 5px;
-    min-height: 200px;
+    min-height: 300px;
 `;
 
-const Card = styled.div`
-    border-radius: 5px;
-    padding: 5px 10px;
-    background-color: ${(props) => props.theme.cardColor};
-    margin-bottom: 5px;
+const Title = styled.h2`
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 18px;
 `;
 
 interface IBoardProps {
@@ -24,15 +25,18 @@ interface IBoardProps {
 
 export default function Board({ toDos, boardId }: IBoardProps) {
     return (
-        <Droppable droppableId={boardId}>
-            {(magic) => (
-                <Wrapper ref={magic.innerRef} {...magic.droppableProps}>
-                    {toDos.map((toDo, index) => (
-                        <DraggableCard key={toDo} index={index} toDo={toDo} />
-                    ))}
-                    {magic.placeholder}
-                </Wrapper>
-            )}
-        </Droppable>
+        <Wrapper>
+            <Title>{boardId}</Title>
+            <Droppable droppableId={boardId}>
+                {(magic) => (
+                    <div ref={magic.innerRef} {...magic.droppableProps}>
+                        {toDos.map((toDo, index) => (
+                            <DragabbleCard key={toDo} index={index} toDo={toDo} />
+                        ))}
+                        {magic.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </Wrapper>
     );
 }

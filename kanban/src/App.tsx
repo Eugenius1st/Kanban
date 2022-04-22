@@ -6,8 +6,7 @@ import Board from "./Components/Board";
 
 const Wrapper = styled.div`
     display: flex;
-    max-width: 680px;
-    width: 100%;
+    width: 100vw;
     margin: 0 auto;
     justify-content: center;
     align-items: center;
@@ -15,37 +14,47 @@ const Wrapper = styled.div`
 `;
 
 const Boards = styled.div`
-    display: grid;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     gap: 10px;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
 `;
 
-function App() {
+export default function App() {
     const [toDos, setToDos] = useRecoilState(toDoState);
-    const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-        if (!destination) return;
-        // setToDos((oldToDos) => {
-        //     const toDosCopy = [...oldToDos];
-        //     toDosCopy.splice(source.index, 1);
-        //     toDosCopy.splice(destination?.index, 0, draggableId);
-
-        //     return toDosCopy;
-        // });
+    const onDragEnd = (info: DropResult) => {
+        console.log(info);
+        const { destination, draggableId, source } = info;
+        //info로 부터 받아올 수 있는 녀석들을 다 받아온다.
+        if (destination?.droppableId === source.droppableId) {
+            // same board movement.같은 보드 안에서 움직였다는 뜻
+            setToDos((allBoards) => {
+                //array를 복사하는 과정
+                const boardCopy = [...allBoards[source.droppableId]];
+                boardCopy.splice(source.index, 1);
+                boardCopy.splice(destination?.index, 0, draggableId);
+                //다른 destination에 넣어준다
+                return {
+                    ...allBoards,
+                    [source.droppableId]: boardCopy,
+                    //다른 모든 board를 가져오고 새로운 board의 copy를 더해주는 것이다.
+                };
+            });
+        }
     };
-    //splice는 인덱스를 지우고 넣고싶은 item을 넣을 수 있다.(위치 지정 가능, item넣기 선택 가능)
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Wrapper>
-                <Boards>
-                    {Object.keys(toDos).map((boardId) => (
-                        <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-                    ))}
-                </Boards>
-            </Wrapper>
-        </DragDropContext>
+        <div></div>
+        // <DragDropContext onDragEnd={onDragEnd}>
+        //     <Wrapper>
+        //         <Boards>
+        //             {Object.keys(toDos).map((boardId) => (
+        //                 <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+        //             ))}
+        //         </Boards>
+        //     </Wrapper>
+        // </DragDropContext>
     );
 }
-
-export default App;

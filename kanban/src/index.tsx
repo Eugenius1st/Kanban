@@ -82,8 +82,8 @@ ReactDOM.render(
     <React.StrictMode>
         <RecoilRoot>
             <ThemeProvider theme={theme}>
-                <GlobalStyle />
                 <App />
+                <GlobalStyle />
             </ThemeProvider>
         </RecoilRoot>
     </React.StrictMode>,
